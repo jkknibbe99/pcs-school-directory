@@ -1,0 +1,46 @@
+html,
+body {
+    width: 100%;
+}
+
+thead {
+    background-color: rgb(218, 224, 229);
+}
+
+th:not(.no-sort):hover {
+    background-color: rgb(195, 200, 205);
+}
+
+#data-table-container {
+    color: rgb(45, 45, 45);
+    max-width: 1500px;
+    margin: auto;
+}
+
+#additionalInfoModal {
+    color: rgb(45, 45, 45);
+}
+
+#data-table_filter {
+    margin-bottom: 5px;
+}
+
+/* .modal-dialog {
+    max-width: 1000px;
+    margin: auto;
+} */
+
+#offcanvas-sidebar {
+    background-color: #132639;
+    width: 200px;
+}
+
+#offcanvas-sidebar-btn {
+    position: fixed;
+    top: 30px;
+    right: 0px;
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}

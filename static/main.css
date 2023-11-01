@@ -1,0 +1,47 @@
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+#directory {
+    display: block;
+    font-size: 10px;
+}
+
+.full-page {
+    height: 1056px;
+    padding: 25px;
+    width: 100%;
+    border: 1px solid black;
+}
+
+.column {
+    /* display: inline-block; */
+    /* width: 49%; */
+    height: 100%;
+}
+
+.l-col {
+    padding-right: 12.5px;
+}
+
+.r-col {
+    padding-left: 12.5px;
+}
+
+.family {
+    margin-bottom: 5px;
+}
+
+.parents {
+    font-weight: 700;
+}
+
+.address, .phone {
+    display: inline-block;
+    width: fit-content
+}
+
+.phone {
+    font-weight: 500;
+}

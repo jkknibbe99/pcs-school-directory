@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roster</title>
+
+    <!-- Mobile viewing -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!-- Bootstrap JS -->
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+
+    <!-- Fontawesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='jquery/jquery-3.7.0.min.js') }}"></script>
+
+    <!-- DataTables -->
+    <link href="{{ url_for('static', filename='DataTables/datatables.min.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='DataTables/datatables.min.js') }}"></script>
+
+    <!-- main.css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+    <!-- roster.css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='roster.css') }}">
+
+</head>
+
+<body>
+    <h1 style="text-align: center;" class="pt-4 pb-3">PCS Roster</h1>
+
+    {% if False %}
+        <!-- Offcanvas sidebar -->
+        <button id="offcanvas-sidebar-btn" class="btn btn-lg btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-sidebar" aria-controls="offcanvas-sidebar">
+            <i class="fa-solid fa-caret-left"></i>
+        </button>
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas-sidebar" aria-labelledby="offcanvas-sidebarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvas-sidebarLabel">Menu</h5>
+                <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div>
+                    <!-- Login as Admin link -->
+                    {% if username %}
+                    <p>Logged in as <em><strong>{{ username }}</strong></em></p>
+                    <div class="mb-2">
+                        <button class="btn btn-secondary" onclick="location.href = `{{ url_for('logout') }}`">Logout</button>
+                    </div>
+                    <div class="mb-2">
+                        {% if username|lower == 'admin' %}
+                        <button class="btn btn-secondary" onclick="location.href = `{{ url_for('login', username='user') }}`">Login as Basic user</button>
+                        {% else %}
+                        <button class="btn btn-secondary" onclick="location.href = `{{ url_for('login', username='admin') }}`">Login as Admin</button>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <button class="btn btn-secondary" onclick="location.href = `{{ url_for('login', username='user') }}`">Login</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div id="data-table-container" class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="data-table" class="table table-sm">
+                    <thead>
+                        <tr>
+                            {% for col_header in displayed_cols %}
+                            <th>
+                                <div style="width: fit-content; margin: auto; text-align: center;">
+                                    {{ col_header }}
+                                </div>
+                            </th>
+                            {% endfor %}
+                            <th class="no-sort"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in roster %}
+                        <tr>
+                            {% for col_header in displayed_cols %}
+                            <td>
+                                <div style="width: fit-content; margin: auto; text-align: center;">
+                                    {{ student[col_header] }}
+                                </div>
+                            </td>
+                            {% endfor %}
+                            <td>
+                                <button class="btn btn-secondary btn-sm additional-info-btn" data-bs-toggle="modal" data-bs-target="#additionalInfoModal" row-index="{{ loop.index0 }}" individual-name="{{ student['lname'] }} {{ student['fname'] }}">Additional Info</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Info Modal -->
+    <div class="modal fade" id="additionalInfoModal" tabindex="-1" aria-labelledby="additionalInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="additionalInfoModalLabel">Additional Info</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <strong id="additionalInfoModalName"></strong>
+                    <div class="table-responsive">
+                        <table id="additional-data-table" class="table table-sm">
+                            <thead>
+                                <tr>
+                                    {% for col_header in roster[0] if col_header not in displayed_cols %}
+                                    <th class="no-sort">
+                                        <div style="width: fit-content; margin: auto; text-align: center;">
+                                            {{ col_header }}
+                                        </div>
+                                    </th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in roster %}
+                                <tr>
+                                    {% for col_header in roster[0] if col_header not in displayed_cols %}
+                                    <td>
+                                        <div style="width: fit-content; margin: auto; text-align: center;">
+                                            {{ student[col_header] }}
+                                        </div>
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Create DataTable
+        new DataTable('#data-table', {
+            columnDefs: [
+                {
+                    targets: 'no-sort',
+                    orderable: false
+                }
+            ]
+        });
+
+
+        // Additional info buttons
+        $('.additional-info-btn').on('click', function () {
+            const individual_name = $(this).attr('individual-name');
+            $('#additionalInfoModalName').html(individual_name);
+            const row_index = parseInt($(this).attr('row-index')) + 1;
+            $('#additional-data-table tbody tr').hide();
+            $('#additional-data-table tbody tr:nth-child(' + row_index + ')').show();
+        });
+
+
+        // Resize table to show all
+        function ResizeTable() {
+            const data_table_container_width = $('#data-table-container').width();
+            $('#data-table').css('font-size', '16px');
+            let data_table_width = $('#data-table').width();
+            while (data_table_width > data_table_container_width) {
+                const font_size_float = parseFloat($('#data-table').css('font-size').slice(0, $('#data-table').css('font-size').length - 2));
+                $('#data-table').css('font-size', font_size_float - 1 + 'px');
+                data_table_width = $('#data-table').width();
+            }
+        }
+        // ResizeTable();
+
+
+        // Vertically align everything
+        function VerticallyAlignAll() {
+            // Zero-out all padding
+            $('#data-table th div').each(function (index) {
+                $(this).css('padding-top', '0px');
+                $(this).css('padding-bottom', '0px');
+            });
+            $('#data-table tbody tr').each(function (index) {
+                const row = $(this);
+                row.find('td div').each(function (index) {
+                    $(this).css('padding-top', '0px');
+                    $(this).css('padding-bottom', '0px');
+                });
+            });
+            // Align header
+            const th_height = $('#data-table th').height();
+            $('#data-table th div').each(function (index) {
+                const elem_height = $(this).height();
+                if (elem_height < th_height) {
+                    $(this).css('padding-top', (th_height - elem_height) / 2 + 'px');
+                    $(this).css('padding-bottom', (th_height - elem_height) / 2 + 'px');
+                }
+            });
+            // Align rows
+            $('#data-table tbody tr').each(function (index) {
+                const row = $(this);
+                const row_height = row.height();
+                let largest_height = 0;
+                row.find('td div').each(function (index) {
+                    if ($(this).height() > largest_height) {
+                        largest_height = $(this).height();
+                    }
+                });
+                row.find('td div').each(function (index) {
+                    const elem_height = $(this).height();
+                    if (elem_height > 0) {
+                        if (elem_height < largest_height) {
+                            $(this).css('padding-top', (largest_height - elem_height) / 2 + 'px');
+                            $(this).css('padding-bottom', (largest_height - elem_height) / 2 + 'px');
+                        }
+                    }
+                });
+            });
+        }
+        VerticallyAlignAll();
+
+
+        // Resize table and align content vertically any time the webpage is resized
+        window.onresize = function () {
+            // ResizeTable();
+            VerticallyAlignAll();
+        }
+    </script>
+</body>
+
+</html>

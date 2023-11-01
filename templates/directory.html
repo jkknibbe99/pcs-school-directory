@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Directory</title>
+        
+        <!-- Mobile viewing -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+        
+        <!-- Bootstrap JS -->
+        <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+
+        <!-- jQuery -->
+        <script src="{{ url_for('static', filename='jquery/jquery-3.7.0.min.js') }}"></script>
+
+        <!-- Pagination script -->
+        <script src="{{ url_for('static', filename='pagination.js') }}"></script>
+    </head>
+    <body>
+        <div class="d-flex justify-content-center align-items-center full-page" style="display: block;">
+            <h1 style="width: fit-content;">PCS Directory</h1>
+        </div>
+        
+        <div id="directory">
+            <div class="full-page d-flex justify-content-center align-items-start">
+                <div class="column flex-fill l-col">
+                    {% for family in families %}
+                    <div class="family card">
+                        {% if card_format %}<div class="card-body">{% endif %}
+                            <div class="row">
+                                <div class="parents col">{{ family.parents }}</div>
+                                <div class="church col-auto">{{ family['church affiliation'] }}</div>
+                            </div>
+                
+                            <div class="row">
+                                <div class="address col">
+                                    {{ family.street }}
+                                    <br>
+                                    {{ family.city }}, {{ family.state }} {{ family.zip }}
+                                </div>
+                                <div class="phone col-auto">
+                                    {{ family.phone1 }}
+                                    <br>
+                                    {{ family.phone2 }}
+                                </div>
+                            </div>
+                
+                            <div class="email">
+                                <strong>Email:</strong>
+                                {{ family.email1 }}
+                                {% if family.email2|length > 0 %}
+                                , {{ family.email2 }}
+                                {% endif %}
+                            </div>
+                            <div class="children">
+                                <table>
+                                    {% for child in family.children %}
+                                    <tr>
+                                        <td class="ps-5">{{ child.fname }}</td>
+                                        <td class="ps-5">{{ child.gradelevel }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                            {% if card_format %}
+                        </div>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
