@@ -3,3 +3,8 @@ pyvenv.cfg
 Scripts/
 Lib/
 Include/
+
+# Pyinstaller
+*.spec
+build/
+dist/

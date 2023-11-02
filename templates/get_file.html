@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get File</title>
+
+    <!-- Mobile viewing -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!-- Bootstrap JS -->
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='jquery/jquery-3.7.0.min.js') }}"></script>
+</head>
+
+<body>
+    <h1 style="text-align: center;">PCS Directory</h1>
+    <form id="upload-file-form" style="width: fit-content; margin: auto;" method="post" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+        <p>Please upload the school roster csv file</p>
+        <input type="file" name="file" id="file-input" accept=".csv">
+        <div id="invalid-file-alert" class="alert alert-danger mt-3" role="alert" style="display: none;">
+            Invalid file type. Must be a .csv file.
+        </div>
+        <script>
+            function fileInputChanged() {
+                const filepath = $('#file-input').val();
+                if (filepath != '') {
+                    if (filepath.endsWith('.csv')) {
+                        $('#upload-file-form').submit();
+                    } else {
+                        $('#invalid-file-alert').show()
+                    }
+                }
+            }
+            fileInputChanged();
+            $('#file-input').on('change', fileInputChanged);
+        </script>
+    </form>
+</body>
+
+</html>
