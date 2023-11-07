@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        
+        <!-- Bootstrap JS -->
+        <script src="js/bootstrap.min.js"></script>
+
+        <!-- jQuery -->
+        <script src="js/jquery-3.7.0.min.js"></script>
+        
+        <!-- Papa Parse (CSV parser) -->
+        <script src="js/papaparse.min.js"></script>
+
+        <script>
+            function readFileContents() {
+                $('#error-msg').hide();
+                var file = document.getElementById("fileForUpload").files[0];
+                if (file.name.endsWith('.csv')) {
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.readAsText(file, "UTF-8");
+                        reader.onload = function (evt) {
+                            const file_contents = evt.target.result;
+                            if (file_contents.length == 0) {
+                                $('#error-msg').html('<strong>Error:</strong> File is empty');
+                                $('#error-msg').show();
+                            }
+                            const parse_info = Papa.parse(file_contents);
+                            console.log(parse_info);
+                            if (parse_info.errors.length > 0) {
+                                console.log(parse_info.errors);
+                                let error_str = '<ul>';
+                                for (let i = 0; i < parse_info.errors.length; i++) {
+                                    error_str += '<li>';
+                                    for (const key in parse_info.errors[i]) {
+                                        error_str += key + ': ' + parse_info.errors[i][key] + '<br>';
+                                    }
+                                    error_str += '</li>';
+                                }
+                                error_str += '</ul>';
+                                $('#error-msg').html('<strong>Error:</strong> Could not parse' + error_str);
+                                $('#error-msg').show();
+                            }
+                        }
+                        reader.onerror = function (evt) {
+                            $('#error-msg').html('<strong>Error:</strong> Could not read file');
+                            $('#error-msg').show();
+                        }
+                    } else {
+                        $('#error-msg').html('<strong>Error:</strong> No file selected');
+                        $('#error-msg').show();
+                    }
+                } else {
+                    $('#error-msg').html('<strong>Error:</strong> File must be a .csv');
+                    $('#error-msg').show();
+                }
+            }
+
+            $('#fileForUpload').change(function() {
+                $('#error-msg').hide();
+            });
+        </script>
+    </head>
+    
+    <body>
+        <h1 style="text-align: center;">PCS Directory</h1>
+        <div style="width: fit-content; margin: auto;">
+            <input type="file" class="form-control" id="fileForUpload" accept=".csv">
+            <div class="mt-2" style="width: fit-content; margin: auto;">
+                <button class="btn btn-primary" onclick="readFileContents()">Read</button>
+            </div>
+            <div id="error-msg" class="alert alert-danger mt-2" role="alert" style="display: none;">
+                An error occurred while reading the file!
+            </div>
+        </div>
+        
+        <div id="fileContents"></div>
+    </body>
+</html>
