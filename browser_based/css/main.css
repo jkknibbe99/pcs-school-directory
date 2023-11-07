@@ -1,0 +1,69 @@
+:root {
+    --page-width: 815px;
+    --page-padding: 28px;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: lightgray;
+}
+
+.full-page {
+    position: relative;
+    height: 1056px;
+    padding: var(--page-padding);
+    width: var(--page-width);
+    max-width: 2000px;
+    border: 1px solid lightgray;
+    background-color: white;
+}
+
+#directory-title-header {
+    text-align: center;
+}
+
+.col-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    margin-left: 0px;
+}
+
+.column {
+    height: 100%;
+}
+
+.l-col {
+    padding-right: 12.5px;
+}
+
+.r-col {
+    padding-left: 12.5px;
+}
+
+.page-num {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.family {
+    margin-bottom: 5px;
+    font-size: 10px;
+}
+
+.parents {
+    font-weight: 700;
+}
+
+.address, .phone {
+    display: inline-block;
+    width: fit-content
+}
+
+.phone {
+    font-weight: 500;
+}
