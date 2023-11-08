@@ -22,15 +22,39 @@
     
     <body>
         <div id="file-input-container">
-            <h1 style="text-align: center;" class="mt-5 mb-3">PCS Directory Maker</h1>
             <div style="width: fit-content; margin: auto;">
-                <p class="mb-2" style="text-align: center;">Please upload Gradelink CSV export</p>
-                <input type="file" class="form-control" id="file-input" accept=".csv" onchange="fileChange()">
+                <h1 style="display: inline-block; width: fit-content;" class="mt-5 mb-0">PCS Directory Maker</h1>
+                <p style="display: inline-block; width: fit-content" class="mb-3">v1.1.0</p>
+            </div>
+            <div style="width: fit-content; margin: auto;">
+                <label for="roster-file-input">Please upload roster CSV</label>
+                <input type="file" class="form-control mb-2" id="roster-file-input" accept=".csv" onchange="fileChange()">
+                <label for="church-file-input">Please upload church affiliation CSV</label>
+                <input type="file" class="form-control mb-2" id="church-file-input" accept=".csv" onchange="fileChange()">
                 <div class="mt-2" style="width: fit-content; margin: auto;">
-                    <button class="btn btn-primary" onclick="readFileContents()">Go</button>
+                    <button class="btn btn-primary" onclick="readAllFiles()">Go</button>
                 </div>
                 <div id="error-msg" class="alert alert-danger mt-2" role="alert" style="display: none;">
                     An error occurred while reading the file!
+                </div>
+            </div>
+
+            <!-- Church file missing modal -->
+            <div id="church-modal" class="modal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">File missing</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>No church affiliation csv file was selected. Do you want to create the directory without it? (Directory will still be created correctly if "church affiliation" column was added to roster csv)</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="buildFamilies(parse_objs['roster'])">Continue</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
