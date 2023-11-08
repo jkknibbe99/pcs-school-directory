@@ -156,6 +156,7 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
         // format parents string
         const parent_fullname = student['father'] ? student['father'] : student['mother'];
         const parents_lname = parent_fullname.split(parent_fullname.includes(',') ? ',' : ' ')[parent_fullname.includes(',') ? 0 : 1]
+        student['parents_lname'] = parents_lname;
         let father_fname = '';
         if (student['father'].length > 0) {
             father_fname = student['father'].toLowerCase().replace(parents_lname.toLowerCase(), '').replace(',', '').replace(' ', '');
@@ -286,7 +287,7 @@ function createDirectoryHTML(families) {
         for (const child of family.children) {
             children_html += `
             <tr>
-                <td class="ps-5">` + child.fname + `</td>
+                <td class="ps-5">` + child.fname + ( child.lname != child.parents_lname ? ' ' + child.lname : '' ) + `</td>
                 <td class="ps-5">` + child.gradelevel + `</td>
             </tr>
             `;
