@@ -3,40 +3,6 @@ const NUM_FILES = 2;  // Number of files to read
 let parse_objs = {};  // global variable to hold parse objects
 let file_reads_attempted = 0;  // tracks number of files the program attempted to read
 
-/**
- * Reads all files
- */
-function readAllFiles() {
-    parse_objs = {};
-    file_reads_attempted = 0;
-    readFileContents(document.getElementById('roster-file-input'), 'roster');
-    readFileContents(document.getElementById('church-file-input'), 'church');
-}
-
-
-/**
- * Callback function for when a file read attempt is completed
- */
-function fileReadAttemptComplete() {
-    file_reads_attempted++;
-    if (file_reads_attempted == NUM_FILES) {
-        allFilesRead();
-    }
-}
-
-
-/**
- * callback once all files have been read or at least attempted
- */
-function allFilesRead() {
-    if (!('church' in parse_objs)) {
-        const church_modal = new bootstrap.Modal(document.getElementById('church-modal'));
-        church_modal.show();
-    } else {
-        buildFamilies(parse_objs['roster'], parse_objs['church']);
-    }
-}
-
 
 /**
  * Reads the contents of the selected file
@@ -94,6 +60,41 @@ function readFileContents(file_input_elem, file_category) {
 
 
 /**
+ * Reads all files
+ */
+function readAllFiles() {
+    parse_objs = {};
+    file_reads_attempted = 0;
+    readFileContents(document.getElementById('roster-file-input'), 'roster');
+    readFileContents(document.getElementById('church-file-input'), 'church');
+}
+
+
+/**
+ * Callback function for when a file read attempt is completed
+ */
+function fileReadAttemptComplete() {
+    file_reads_attempted++;
+    if (file_reads_attempted == NUM_FILES) {
+        allFilesRead();
+    }
+}
+
+
+/**
+ * callback once all files have been read or at least attempted
+ */
+function allFilesRead() {
+    if (!('church' in parse_objs)) {
+        const church_modal = new bootstrap.Modal(document.getElementById('church-modal'));
+        church_modal.show();
+    } else {
+        buildFamilies(parse_objs['roster'], parse_objs['church']);
+    }
+}
+
+
+/**
  * Formats the given phone number
  */
 function formatPhoneNumber(phoneNumberString) {
@@ -116,7 +117,6 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
     // Build roster (array of student objects)
     let col_headers = roster_parse_obj.data[0];
     col_headers = col_headers.map((el) => el.toLowerCase());
-    console.log(col_headers);
     let roster = roster_parse_obj.data.slice(1);
     let obj_roster = []
     for (let i = 0; i < roster.length; i++) {
@@ -182,6 +182,11 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
     for (const student of roster) {
         let family_exists = false;
         for (const family of families) {
+            if (!('familyid' in student)) {
+                $('#error-msg').html('<strong>Error:</strong> Roster missing "FamilyID" column');
+                $('#error-msg').show();
+                return;
+            }
             if (family['familyid'] == student['familyid']) {
                 family['children'].push(student);
                 family_exists = true;
