@@ -57,6 +57,7 @@ html, body {
 
 .parents {
     font-weight: 700;
+    font-size: 11px;
 }
 
 .address, .phone {
@@ -64,6 +65,10 @@ html, body {
     width: fit-content
 }
 
+.phone, .email-title {
+    font-weight: 600;
+}
+
 .phone {
-    font-weight: 500;
+    text-align: right;
 }

@@ -198,6 +198,8 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
             families.push({
                 familyid: student['familyid'],
                 parents: student['parents'],
+                father_fname: student['father'].includes(',') ? student['father'].split(',')[1] : student['father'].split(' ')[0],
+                mother_fname: student['mother'].includes(',') ? student['mother'].split(',')[1] : student['mother'].split(' ')[0],
                 street: student['street'],
                 city: student['city'],
                 state: student['state'],
@@ -307,12 +309,12 @@ function createDirectoryHTML(families) {
                         ` + family.city + ', ' + family.state + ' ' + family.zip + `
                     </div>
                     <div class="phone col-auto">
-                        ` + family.phone1 + (family.phone1 && family.phone2 ? `<br>` : '' ) + family.phone2 + `
+                        ` + (family.phone1 ? family.father_fname + ': ' + family.phone1 : '') + (family.phone1 && family.phone2 ? `<br>` : '') + (family.phone2 ? family.mother_fname + ': ' + family.phone2 : '' ) + `
                     </div>
                 </div>
     
                 <div class="email">
-                    <strong>Email: </strong>` + family.email1 + (family.email1 && family.email2 ? ', ' : '' ) + family.email2 + `
+                    <span class="email-title">Email: </span>` + family.email1 + (family.email1 && family.email2 ? ', ' : '' ) + family.email2 + `
                 </div>
                 <div class="children">
                     <table>
