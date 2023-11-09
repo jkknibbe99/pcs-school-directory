@@ -13,18 +13,35 @@
         <!-- Papa Parse (CSV parser) -->
         <script src="js/papaparse.min.js"></script>
 
-        <!-- main css -->
-        <link rel="stylesheet" href="css/main.css">
-        
-        <!-- main script -->
-        <script src="js/main.js"></script>
+        <!-- Version files refresh script -->
+        <script>
+            const version = '1.1.3';  // the current version
+
+            // Add version to main.css
+            document.head.insertAdjacentHTML('beforeend', `
+                <!-- main css -->
+                <link rel="stylesheet" href="css/main.css?v=` + version + `">
+            `);
+
+            // Add version to main.js
+            let main_script_elem = document.createElement('script');
+            main_script_elem.id = "external_content";
+            main_script_elem.src = "js/main.js?v=" + version;
+            document.head.insertAdjacentHTML('beforeend', '<!-- main script -->');
+            document.head.insertAdjacentElement('beforeend', main_script_elem);
+
+            // Add verion after index page title
+            $(document).ready(function() {
+                $('#version').html('v' + version);
+            });
+        </script>
     </head>
     
     <body>
         <div id="file-input-container">
             <div style="width: fit-content; margin: auto;">
                 <h1 style="display: inline-block; width: fit-content;" class="mt-5 mb-0">PCS Directory Maker</h1>
-                <p style="display: inline-block; width: fit-content" class="mb-3">v1.1.3</p>
+                <p id="version" style="display: inline-block; width: fit-content" class="mb-3"></p>
             </div>
             <div style="width: fit-content; margin: auto;">
                 <label for="roster-file-input">Please upload roster CSV</label>
