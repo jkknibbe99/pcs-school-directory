@@ -1,4 +1,5 @@
 const student_lnames_to_ignore = ["Z - Church Account"]  // Ignore any students with last name in this array (currently used to ignore church accnts)
+const FAMILY_CARD_FORMAT = false;  // Use bootstrap card boxes to encapsulate each family html block
 const NUM_FILES = 2;  // Number of files to read
 let parse_objs = {};  // global variable to hold parse objects
 let file_reads_attempted = 0;  // tracks number of files the program attempted to read
@@ -277,7 +278,7 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
 
 
 /**
- * Create HTML cards for each family
+ * Create HTML blocks for each family
  * @param {Array} families 
  */
 function createDirectoryHTML(families) {
@@ -295,8 +296,8 @@ function createDirectoryHTML(families) {
             `;
         }
         let html = `
-        <div class="family card">
-            <div class="card-body">
+        <div class="family` + ( FAMILY_CARD_FORMAT ? ' card' : '' ) + `">
+            <div` + (FAMILY_CARD_FORMAT ? ' class="card-body"' : '') + `>
                 <div class="row">
                     <div class="parents col">` + family.parents + `</div>
                     <div class="church col-auto">` + family['church affiliation'] + `</div>
@@ -331,12 +332,18 @@ function createDirectoryHTML(families) {
 
 
 /**
- * Organizes all family cards into columns and pages. Adds page numbers.
+ * Adds a new directory page
+ * @param {*} html 
+ */
+function addNewDirPage(html) {
+    $('body').append('<div class="full-page container" contenteditable="true"><div class="col-container row justify-content-center align-items-start"><div class="column col l-col">' + (html ? html : '') + '</div></div><div class="page-num mb-3">' + (parseInt($('.page-num:last').html()) + 1) + '</div></div>');
+}
+
+
+/**
+ * Organizes all family html blocks into columns and pages. Adds page numbers.
  */
 function organizePages(html, families_complete) {
-    function addNewDirPage(html) {
-        $('body').append('<div class="full-page container" contenteditable="true"><div class="col-container row justify-content-center align-items-start"><div class="column col l-col">' + ( html ? html : '' ) + '</div></div><div class="page-num mb-3">' + (parseInt($('.page-num:last').html()) + 1) + '</div></div>');
-    }
     const current_col = $('.column').last();
     // create first directory page
     if (current_col.length == 0) {
@@ -381,8 +388,8 @@ function organizePages(html, families_complete) {
                 }
             } else {
                 const blank_fam_card = `
-                <div class="family card">
-                    <div class="card-body">
+                <div class="family` + ( FAMILY_CARD_FORMAT ? ' card' : '' ) + `">
+                    <div` + (FAMILY_CARD_FORMAT ? ' class="card-body"' : '') + `>
                         <div style="height: 90px"></div
                     </div>
                 </div>

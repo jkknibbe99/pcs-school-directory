@@ -1,6 +1,7 @@
 :root {
     --page-width: 815px;
     --page-padding: 28px;
+    --family-font-size: 13px;
 }
 
 html, body {
@@ -51,13 +52,13 @@ html, body {
 }
 
 .family {
-    margin-bottom: 5px;
-    font-size: 10px;
+    margin-bottom: 10px;
+    font-size: var(--family-font-size);
 }
 
 .parents {
     font-weight: 700;
-    font-size: 11px;
+    font-size: calc(var(--family-font-size) + 1px);
 }
 
 .address, .phone {
