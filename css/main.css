@@ -1,7 +1,6 @@
 :root {
     --page-width: 815px;
     --page-padding: 28px;
-    --family-font-size: 13px;
 }
 
 html, body {
@@ -24,6 +23,19 @@ html, body {
     text-align: center;
 }
 
+td {
+    text-align: center;
+}
+
+.spacing-img {
+    width: 20px;
+    height: 20px;
+}
+
+.num-input {
+    max-width: 65px;
+}
+
 .col-container {
     position: relative;
     height: 100%;
@@ -32,15 +44,10 @@ html, body {
 }
 
 .column {
+    display: inline-block;
     height: 100%;
-}
-
-.l-col {
-    padding-right: 12.5px;
-}
-
-.r-col {
-    padding-left: 12.5px;
+    width: 50%;
+    vertical-align: top;
 }
 
 .page-num {
@@ -51,14 +58,9 @@ html, body {
     text-align: center;
 }
 
-.family {
-    margin-bottom: 10px;
-    font-size: var(--family-font-size);
-}
-
 .parents {
     font-weight: 700;
-    font-size: calc(var(--family-font-size) + 1px);
+    font-size: calc(100% + 1px);
 }
 
 .address, .phone {

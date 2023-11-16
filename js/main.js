@@ -3,6 +3,7 @@ const FAMILY_CARD_FORMAT = false;  // Use bootstrap card boxes to encapsulate ea
 const NUM_FILES = 2;  // Number of files to read
 let parse_objs = {};  // global variable to hold parse objects
 let file_reads_attempted = 0;  // tracks number of files the program attempted to read
+let families;
 
 
 /**
@@ -180,7 +181,7 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
     }
 
     // Build array of families
-    let families = [];
+    families = [];
     for (const student of roster) {
         let family_exists = false;
         for (const family of families) {
@@ -273,15 +274,14 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
             return 0;
         });
     }
-    createDirectoryHTML(families);
+    createDirectoryHTML();
 }
 
 
 /**
  * Create HTML blocks for each family
- * @param {Array} families 
  */
-function createDirectoryHTML(families) {
+function createDirectoryHTML() {
     $('#file-input-container').hide();
     $('#directory-title-page').show();
     let all_families_html = ``;
@@ -296,7 +296,7 @@ function createDirectoryHTML(families) {
             `;
         }
         let html = `
-        <div class="family` + ( FAMILY_CARD_FORMAT ? ' card' : '' ) + `">
+        <div class="family` + ( FAMILY_CARD_FORMAT ? ' card' : '' ) + `" style="margin-bottom: ` + $('#family-spacing').val() + `px; font-size: ` + $('#family-fontsize').val() + `px;">
             <div` + (FAMILY_CARD_FORMAT ? ' class="card-body"' : '') + `>
                 <div class="row">
                     <div class="parents col">` + family.parents + `</div>
@@ -327,7 +327,16 @@ function createDirectoryHTML(families) {
         `;
         all_families_html += html;
     }
-    organizePages(all_families_html);
+    addNewDirPage(all_families_html)
+    organizeColumnsAndPagesLoop();
+}
+
+
+/**
+ * Clears out all the family pages from the directory
+ */
+function clearDirectoryHTML() {
+    $('.family-page').remove();
 }
 
 
@@ -336,69 +345,56 @@ function createDirectoryHTML(families) {
  * @param {*} html 
  */
 function addNewDirPage(html) {
-    $('body').append('<div class="full-page container" contenteditable="true"><div class="col-container row justify-content-center align-items-start"><div class="column col l-col">' + (html ? html : '') + '</div></div><div class="page-num mb-3">' + (parseInt($('.page-num:last').html()) + 1) + '</div></div>');
+    $('body').append('<div class="full-page container family-page" contenteditable="true"><div class="col-container"><div class="column l-col" style="padding-right: ' + ($('#column-spacing').val() / 2) + 'px;">' + (html ? html : '') + '</div></div><div class="page-num mb-3">' + (parseInt($('.page-num:last').html()) + 1) + '</div></div>');
 }
 
 
 /**
- * Organizes all family html blocks into columns and pages. Adds page numbers.
+ * Recursive function. Organizes directory into columns and pages
  */
-function organizePages(html, families_complete) {
+function organizeColumnsAndPagesLoop() {
     const current_col = $('.column').last();
-    // create first directory page
-    if (current_col.length == 0) {
-        addNewDirPage(html);
-        organizePages();
-    }
-    const col_height = parseFloat(current_col.height());
-    let height_sum = 0;
-    let col_max_reached = false;
-    let done = false;
-    const num_families_in_col = current_col.find('.family').length;
-    current_col.find('.family').each(function (index) {
-        if (col_max_reached) {
-            $('.column').last().append($(this));
+    const curr_col_index = $('.column').length - 1;
+    const curr_col_height = current_col.height();
+    const curr_col_fams = current_col.find('.family');
+    let content_height = 0;
+    for (let i = 0; i < curr_col_fams.length; i++) {
+        content_height += $(curr_col_fams[i]).height();
+        if (content_height > curr_col_height) {
+            // Add a new column if necessary
+            if ($('.column').length - 1 == curr_col_index)
+                if (current_col.hasClass('r-col')) {
+                    // Add a new page and l-col
+                    addNewDirPage();
+                } else {
+                    // Add a r-col
+                    current_col.closest('.col-container').append('<div class="column r-col" style="padding-left: ' + ($('#column-spacing').val() / 2) + 'px;"></div></div>')
+                }
+            // move overflow families to next column
+            for (let j = i; j < curr_col_fams.length; j++) {
+                document.querySelectorAll('.column')[document.querySelectorAll('.column').length-1].appendChild(curr_col_fams[j]);
+            }
+            // recursively loop
+            organizeColumnsAndPagesLoop();
+            return;
         } else {
-            height_sum += $(this).height() + parseFloat($(this).css('margin-bottom').replace('px', ''));
-            height_sum += parseFloat($(this).css('margin-bottom').replace('px', ''));
-            height_sum = parseFloat(height_sum);
-            if (height_sum > col_height) {
-                col_max_reached = true;
-                // Create new column
-                const col_side_class = (current_col.hasClass('l-col') ? 'r-col' : 'l-col');
-                if (col_side_class == 'l-col') {
-                    if (!families_complete) {
-                        addNewDirPage()
-                    } else {
-                        done = true;
-                    }
-                } else {
-                    $('.col-container').last().append('<div class="column col ' + col_side_class + '"></div>');
-                }
-                $('.column').last().append($(this));
-            }
+            content_height += parseFloat($(curr_col_fams[i]).css('margin-bottom').replace('px', ''));
         }
-        if (index == num_families_in_col - 1) {
-            if (col_max_reached) {
-                if (!done) {
-                    organizePages('', families_complete);
-                } else {
-                    $('.family').last().remove();
-                    return;
-                }
-            } else {
-                const blank_fam_card = `
-                <div class="family` + ( FAMILY_CARD_FORMAT ? ' card' : '' ) + `">
-                    <div` + (FAMILY_CARD_FORMAT ? ' class="card-body"' : '') + `>
-                        <div style="height: 90px"></div
-                    </div>
-                </div>
-                `
-                $('.column').last().append(blank_fam_card);
-                organizePages('', true);
-            }
-        }
-    });
+    }
+    // families fit in current column, if curr col is l-col, add r-col and blank family to finish up.
+    if (current_col.hasClass('l-col')) {
+        // Add a r-col
+        current_col.closest('.col-container').append('<div class="column r-col" style="padding-left: ' + ($('#column-spacing').val() / 2) + 'px;"></div></div>')
+        // Add blank family
+        const blank_fam_card = `
+        <div class="family` + (FAMILY_CARD_FORMAT ? ' card' : '') + `">
+            <div` + (FAMILY_CARD_FORMAT ? ' class="card-body"' : '') + `>
+                <div style="height: 90px"></div
+            </div>
+        </div>
+        `
+        $('.column').last().append(blank_fam_card);
+    }
 }
 
 
@@ -410,10 +406,29 @@ function fileChange () {
 };
 
 
+/* Options input changes */
+function redoDirectoryHTML() {
+    clearDirectoryHTML();
+    createDirectoryHTML();
+}
+// family font-size
+$('#family-fontsize').on('input', function () {
+    redoDirectoryHTML();
+});
+// family spacing
+$('#family-spacing').on('input', function () {
+    redoDirectoryHTML();
+});
+// column spacing
+$('#column-spacing').on('input', function () {
+    redoDirectoryHTML();
+});
+
+
 // Printing
 window.onbeforeprint = function(){
-    $('#print-btn').hide();
+    $('.dont-print').hide();
 };
 window.onafterprint = function(){
-    $('#print-btn').show();
+    $('.dont-print').show();
 };

@@ -15,7 +15,7 @@
 
         <!-- Version files refresh script -->
         <script>
-            const version = '1.1.4';  // the current version
+            const version = '1.2.0';  // the current version
 
             // Add version to main.css
             document.head.insertAdjacentHTML('beforeend', `
@@ -79,7 +79,41 @@
         <div id="directory-title-page" class="full-page container" style="display: none !important;">
             <div class="d-flex flex-column justify-content-center alight-items-vertical" style="height: 100%;">
                 <h1 id="directory-title-header">PCS Directory</h1>
-                <button id="print-btn" class="btn btn-success" onclick="window.print()">Print</button>
+                <button id="print-btn" class="btn btn-success dont-print" onclick="window.print()">Print</button>
+                <div id="options" class="card mt-3 dont-print">
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Family font size
+                                    </td>
+                                    <td>
+                                        <input id="family-fontsize" class="form-control num-input" type="number" value="13">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Spacing between families
+                                        <img src="images/spacing.svg" class="spacing-img">
+                                    </td>
+                                    <td>
+                                        <input id="family-spacing" class="form-control num-input" type="number" value="20">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Spacing between columns
+                                        <img src="images/spacing.svg" class="spacing-img" style="transform: rotate(90deg)">
+                                    </td>
+                                    <td>
+                                        <input id="column-spacing" class="form-control num-input" type="number" value="40">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             <div class="page-num mb-3" style="display: none;">1</div>
         </div>
