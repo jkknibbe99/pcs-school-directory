@@ -296,7 +296,7 @@ function createDirectoryHTML() {
             `;
         }
         let html = `
-        <div class="family` + ( FAMILY_CARD_FORMAT ? ' card' : '' ) + `" style="margin-bottom: ` + $('#family-spacing').val() + `px; font-size: ` + $('#family-fontsize').val() + `px;">
+        <div class="family` + ( FAMILY_CARD_FORMAT ? ' card' : '' ) + `" style="margin-bottom: ` + $('#family-spacing').val() + `px; font-size: ` + $('#font-size').val() + `px;">
             <div` + (FAMILY_CARD_FORMAT ? ' class="card-body"' : '') + `>
                 <div class="row">
                     <div class="parents col">` + family.parents + `</div>
@@ -345,7 +345,7 @@ function clearDirectoryHTML() {
  * @param {*} html 
  */
 function addNewDirPage(html) {
-    $('body').append('<div class="full-page container family-page" contenteditable="true"><div class="col-container"><div class="column l-col" style="padding-right: ' + ($('#column-spacing').val() / 2) + 'px;">' + (html ? html : '') + '</div></div><div class="page-num mb-3">' + (parseInt($('.page-num:last').html()) + 1) + '</div></div>');
+    $('body').append('<div class="full-page container family-page" contenteditable="true" style="font-family: ' + $('#font-style').val() + ';"><div class="col-container"><div class="column l-col" style="padding-right: ' + ($('#column-spacing').val() / 2) + 'px;">' + (html ? html : '') + '</div></div><div class="page-num mb-3">' + (parseInt($('.page-num:last').html()) + 1) + '</div></div>');
 }
 
 
@@ -411,8 +411,13 @@ function redoDirectoryHTML() {
     clearDirectoryHTML();
     createDirectoryHTML();
 }
-// family font-size
-$('#family-fontsize').on('input', function () {
+// font style
+$('#font-style').on('change', function () {
+    $('.full-page').css('font-family', $(this).val());
+    redoDirectoryHTML();
+});
+// font-size
+$('#font-size').on('input', function () {
     redoDirectoryHTML();
 });
 // family spacing
@@ -427,8 +432,16 @@ $('#column-spacing').on('input', function () {
 
 // Printing
 window.onbeforeprint = function(){
+    $('.full-page').css('border', 'none');
     $('.dont-print').hide();
 };
 window.onafterprint = function(){
+    $('.full-page').css('border', '1px solid lightgray');
     $('.dont-print').show();
 };
+
+
+// window onload function
+window.onload = function () {
+    $('.full-page').css('font-family', $('#font-style').val());
+}

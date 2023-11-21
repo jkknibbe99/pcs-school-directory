@@ -15,7 +15,7 @@
 
         <!-- Version files refresh script -->
         <script>
-            const version = '1.2.0';  // the current version
+            const version = '1.2.1';  // the current version
 
             // Add version to main.css
             document.head.insertAdjacentHTML('beforeend', `
@@ -86,10 +86,35 @@
                             <tbody>
                                 <tr>
                                     <td>
+                                        Font style
+                                    </td>
+                                    <td>
+                                        <select id="font-style" class="form-select">
+                                            <option>Arial</option>
+                                            <option>Arial Black</option>
+                                            <option>Baskerville</option>
+                                            <option>Courier</option>
+                                            <option>Comic Sans MS</option>
+                                            <option>Georgia</option>
+                                            <option>Gill Sans</option>
+                                            <option>Helvetica</option>
+                                            <option>Impact</option>
+                                            <option>Lucida</option>
+                                            <option>Monaco</option>
+                                            <option>Palatino</option>
+                                            <option>Tahoma</option>
+                                            <option selected>Times New Roman</option>
+                                            <option>Trebuchet MS</option>
+                                            <option>Verdana</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
                                         Family font size
                                     </td>
                                     <td>
-                                        <input id="family-fontsize" class="form-control num-input" type="number" value="13">
+                                        <input id="font-size" class="form-control num-input" type="number" value="13">
                                     </td>
                                 </tr>
                                 <tr>
@@ -98,7 +123,7 @@
                                         <img src="images/spacing.svg" class="spacing-img">
                                     </td>
                                     <td>
-                                        <input id="family-spacing" class="form-control num-input" type="number" value="20">
+                                        <input id="family-spacing" class="form-control num-input" type="number" value="40">
                                     </td>
                                 </tr>
                                 <tr>
@@ -107,7 +132,7 @@
                                         <img src="images/spacing.svg" class="spacing-img" style="transform: rotate(90deg)">
                                     </td>
                                     <td>
-                                        <input id="column-spacing" class="form-control num-input" type="number" value="40">
+                                        <input id="column-spacing" class="form-control num-input" type="number" value="50">
                                     </td>
                                 </tr>
                             </tbody>
