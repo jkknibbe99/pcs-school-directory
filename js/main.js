@@ -170,6 +170,25 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
             mother_fname = mother_fname.substring(0, 1).toUpperCase() + mother_fname.substring(1);
         }
         student['parents'] = parents_lname + ', ' + father_fname + ( father_fname && mother_fname ? ' & ' : '') + mother_fname;
+        
+        // format family2 parents string
+        if (student['family2parents']) {
+            const parent2_fullname = student['family2name1'] ? student['family2name1'] : student['family2name2'];
+            const parents2_lname = parent2_fullname.split(parent2_fullname.includes(',') ? ',' : ' ')[parent2_fullname.includes(',') ? 0 : 1]
+            student['parents2_lname'] = parents2_lname;
+            let parents2_fname1 = '';
+            if (student['family2name1'].length > 0) {
+                parents2_fname1 = student['family2name1'].toLowerCase().replace(parents2_lname.toLowerCase(), '').replace(',', '').replace(' ', '');
+                parents2_fname1 = parents2_fname1.substring(0, 1).toUpperCase() + parents2_fname1.substring(1);
+            }
+            let parents2_fname2 = '';
+            if (student['family2name2'].length > 0) {
+                parents2_fname2 = student['family2name2'].toLowerCase().replace(parents2_lname.toLowerCase(), '').replace(',', '').replace(' ', '');
+                parents2_fname2 = parents2_fname2.substring(0, 1).toUpperCase() + parents2_fname2.substring(1);
+            }
+            student['parents2'] = parents2_lname + ', ' + parents2_fname1 + (parents2_fname1 && parents2_fname2 ? ' & ' : '') + parents2_fname2;
+        }
+        
         // Add church affiliation
         if (church_list) {
             for (const student_cl of church_list) {
@@ -225,9 +244,10 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
             });
             // If student has family2 info (separated parents) create 2nd family
             if (student['family2parents']) {
+                console.log(student['fullname']);
                 families.push({
                     familyid: student['familyid'] + '_2',
-                    parents: student['family2parents'],
+                    parents: student['parents2'],
                     father_fname: student['family2name1'].includes(',') ? student['family2name1'].split(',')[1] : student['family2name1'].split(' ')[0],
                     mother_fname: student['family2name2'].includes(',') ? student['family2name2'].split(',')[1] : student['family2name2'].split(' ')[0],
                     street: student['street2'],
