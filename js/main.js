@@ -1,4 +1,3 @@
-const student_lnames_to_ignore = ["Z - Church Account"]  // Ignore any students with last name in this array (currently used to ignore church accnts)
 const FAMILY_CARD_FORMAT = false;  // Use bootstrap card boxes to encapsulate each family html block
 const NUM_FILES = 2;  // Number of files to read
 let parse_objs = {};  // global variable to hold parse objects
@@ -123,7 +122,8 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
     let obj_roster = []
     for (let i = 0; i < roster.length; i++) {
         if (roster[i].length > 1) {
-            if (!student_lnames_to_ignore.includes(roster[i][col_headers.indexOf('lname')])) {
+            // add studnt to roster only if has parents (if parents is blank, it is most likely a test or church account)
+            if (roster[i][col_headers.indexOf('parents')]) {
                 let student_obj = {};
                 for (let j = 0; j < col_headers.length; j++) {
                     student_obj[col_headers[j]] = roster[i][col_headers.indexOf(col_headers[j])];
@@ -183,6 +183,7 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
     // Build array of families
     families = [];
     for (const student of roster) {
+        // first check if the student's family already exists in the array
         let family_exists = false;
         for (const family of families) {
             if (!('familyid' in student)) {
@@ -190,12 +191,21 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
                 $('#error-msg').show();
                 return;
             }
+            // if family already exists, add student to family's children array
             if (family['familyid'] == student['familyid']) {
                 family['children'].push(student);
+                // if family2 exists add to that as well
+                for (const family2 of families) {
+                    if (family2['familyid'] == student['familyid'] + '_2') {
+                        family2['children'].push(student);
+                        break;
+                    }
+                }
                 family_exists = true;
                 break;
             }
         }
+        // family doesn't exist, create new
         if (!family_exists) {
             families.push({
                 familyid: student['familyid'],
@@ -209,10 +219,28 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
                 phone1: formatPhoneNumber(student['phone1']),
                 phone2: formatPhoneNumber(student['phone2']),
                 email1: student['email1'],
-                email2: student['email2'],
+                email2: student['email1'] != student['email2'] ? student['email2'] : undefined,
                 'church affiliation': student['church affiliation'],
                 children: [student]
             });
+            // If student has family2 info (separated parents) create 2nd family
+            if (student['family2parents']) {
+                families.push({
+                    familyid: student['familyid'] + '_2',
+                    parents: student['family2parents'],
+                    father_fname: student['family2name1'].includes(',') ? student['family2name1'].split(',')[1] : student['family2name1'].split(' ')[0],
+                    mother_fname: student['family2name2'].includes(',') ? student['family2name2'].split(',')[1] : student['family2name2'].split(' ')[0],
+                    street: student['street2'],
+                    city: student['city2'],
+                    state: student['state2'],
+                    zip: student['zip2'],
+                    phone1: formatPhoneNumber(student['family2phone1']),
+                    phone2: formatPhoneNumber(student['family2phone2']),
+                    email1: student['family2emails'],
+                    'church affiliation': student['church affiliation'],
+                    children: [student]
+                });
+            }
         }
     }
     // Sort families
@@ -296,30 +324,30 @@ function createDirectoryHTML() {
             `;
         }
         let html = `
-        <div class="family` + ( FAMILY_CARD_FORMAT ? ' card' : '' ) + `" style="margin-bottom: ` + $('#family-spacing').val() + `px; font-size: ` + $('#font-size').val() + `px;">
-            <div` + (FAMILY_CARD_FORMAT ? ' class="card-body"' : '') + `>
+        <div class="family${( FAMILY_CARD_FORMAT ? ' card' : '' )}" style="margin-bottom: ${$('#family-spacing').val()}px; font-size: ${$('#font-size').val()}px;">
+            <div${(FAMILY_CARD_FORMAT ? ' class="card-body"' : '')}>
                 <div class="row">
-                    <div class="parents col">` + family.parents + `</div>
-                    <div class="church col-auto">` + family['church affiliation'] + `</div>
+                    <div class="parents col-auto">${family.parents}</div>
+                    <div class="church col text-end">${family['church affiliation']}</div>
                 </div>
 
                 <div class="row">
                     <div class="address col">
-                        ` + family.street + `
+                        ${family.street}
                         <br>
-                        ` + family.city + ', ' + family.state + ' ' + family.zip + `
+                        ${family.city + ', ' + family.state + ' ' + family.zip}
                     </div>
                     <div class="phone col-auto">
-                        ` + (family.phone1 ? family.father_fname + ': ' + family.phone1 : '') + (family.phone1 && family.phone2 ? `<br>` : '') + (family.phone2 ? family.mother_fname + ': ' + family.phone2 : '' ) + `
+                        ${(family.phone1 ? family.father_fname + ': ' + family.phone1 : '') + (family.phone1 && family.phone2 ? '<br>' : '') + (family.phone2 ? family.mother_fname + ': ' + family.phone2 : '' )}
                     </div>
                 </div>
     
                 <div class="email">
-                    <span class="email-title">Email: </span>` + family.email1 + (family.email1 && family.email2 ? ', ' : '' ) + family.email2 + `
+                    <span class="email-title">Email: </span>${(family.email1 ? family.email1 : '') + (family.email1 && family.email2 ? ', ' : '') + (family.email2 ? family.email2 : '' )}
                 </div>
                 <div class="children">
                     <table>
-                        ` + children_html + `
+                        ${children_html}
                     </table>
                 </div>
             </div>
@@ -345,7 +373,12 @@ function clearDirectoryHTML() {
  * @param {*} html 
  */
 function addNewDirPage(html) {
-    $('body').append('<div class="full-page container family-page" contenteditable="true" style="font-family: ' + $('#font-style').val() + ';"><div class="col-container"><div class="column l-col" style="padding-right: ' + ($('#column-spacing').val() / 2) + 'px;">' + (html ? html : '') + '</div></div><div class="page-num mb-3">' + (parseInt($('.page-num:last').html()) + 1) + '</div></div>');
+    $('body').append(
+        `<div class="full-page container family-page" contenteditable="true" style="font-family: ${$('#font-style').val()};">
+            <div class="col-container">
+                <div class="column l-col" style="padding-right: ${($('#column-spacing').val() / 2)}px;">
+                    ${(html ? html : '')}
+                </div></div><div class="page-num mb-3">${(parseInt($('.page-num:last').html()) + 1)}</div></div>`);
 }
 
 
