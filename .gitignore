@@ -3,6 +3,7 @@ pyvenv.cfg
 Scripts/
 Lib/
 Include/
+__pycache__/
 
 # Pyinstaller
 *.spec
