@@ -157,7 +157,15 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
     for (const student of roster) {
         // format parents string
         const parent_fullname = student['father'] ? student['father'] : student['mother'];
-        const parents_lname = parent_fullname.split(parent_fullname.includes(',') ? ',' : ' ')[parent_fullname.includes(',') ? 0 : 1]
+        let parents_lname = parent_fullname.split(parent_fullname.includes(',') ? ',' : ' ')[parent_fullname.includes(',') ? 0 : 1]
+        if (!parents_lname) {
+            parents_lname = student['lname'];
+            if (!parents_lname) {
+                $('#error-msg').html(`<strong>Error:</strong> No last name found for parents of student (${student['studentid']}) ${student[fullname]}`);
+                $('#error-msg').show();
+                return;
+            }
+        }
         student['parents_lname'] = parents_lname;
         let father_fname = '';
         if (student['father'].length > 0) {
@@ -174,7 +182,15 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
         // format family2 parents string
         if (student['family2parents']) {
             const parent2_fullname = student['family2name1'] ? student['family2name1'] : student['family2name2'];
-            const parents2_lname = parent2_fullname.split(parent2_fullname.includes(',') ? ',' : ' ')[parent2_fullname.includes(',') ? 0 : 1]
+            let parents2_lname = parent2_fullname.split(parent2_fullname.includes(',') ? ',' : ' ')[parent2_fullname.includes(',') ? 0 : 1]
+            if (!parents2_lname) {
+                parents2_lname = student['lname'];
+                if (!parents2_lname) {
+                    $('#error-msg').html(`<strong>Error:</strong> No last name found for "family2" parents of student  "${student['fullname']}" (${student['studentid']})`);
+                    $('#error-msg').show();
+                    return;
+                }
+            }
             student['parents2_lname'] = parents2_lname;
             let parents2_fname1 = '';
             if (student['family2name1'].length > 0) {
@@ -244,7 +260,6 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
             });
             // If student has family2 info (separated parents) create 2nd family
             if (student['family2parents']) {
-                console.log(student['fullname']);
                 families.push({
                     familyid: student['familyid'] + '_2',
                     parents: student['parents2'],
@@ -355,7 +370,7 @@ function createDirectoryHTML() {
                     <div class="address col">
                         ${family.street}
                         <br>
-                        ${family.city + ', ' + family.state + ' ' + family.zip}
+                        ${family.city + (family.city ? ', ' : '') + family.state + ' ' + family.zip}
                     </div>
                     <div class="phone col-auto">
                         ${(family.phone1 ? family.father_fname + ': ' + family.phone1 : '') + (family.phone1 && family.phone2 ? '<br>' : '') + (family.phone2 ? family.mother_fname + ': ' + family.phone2 : '' )}
