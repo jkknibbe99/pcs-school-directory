@@ -110,6 +110,17 @@ function formatPhoneNumber(phoneNumberString) {
 
 
 /**
+ * Cleans up the given name for comparison
+ * @param {string} name 
+ */
+function cleanName(name) {
+    name = name.toLowerCase();
+    name = name.replaceAll(' ', '').replaceAll("'", '');
+    return name;
+}
+
+
+/**
  * Builds an array of family objects based on the data read from the uploaded CSV file
  * @param {*} roster_parse_obj 
  * @param {*} church_parse_obj 
@@ -122,7 +133,7 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
     let obj_roster = []
     for (let i = 0; i < roster.length; i++) {
         if (roster[i].length > 1) {
-            // add studnt to roster only if has parents (if parents is blank, it is most likely a test or church account)
+            // add student to roster only if has parents (if parents is blank, it is most likely a test or church account)
             if (roster[i][col_headers.indexOf('parents')]) {
                 let student_obj = {};
                 for (let j = 0; j < col_headers.length; j++) {
@@ -337,6 +348,7 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
             return 0;
         });
     }
+    console.log(families);
     createDirectoryHTML();
 }
 
@@ -353,7 +365,7 @@ function createDirectoryHTML() {
         for (const child of family.children) {
             children_html += `
             <tr>
-                <td class="ps-5">` + child.fname + ( child.lname != child.parents_lname ? ' ' + child.lname : '' ) + `</td>
+                <td class="ps-5">` + child.fname + (cleanName(child.lname) != cleanName(child.parents_lname) ? ' ' + child.lname : '' ) + `</td>
                 <td class="ps-5">` + child.gradelevel + `</td>
             </tr>
             `;
