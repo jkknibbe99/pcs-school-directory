@@ -290,15 +290,9 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
         }
     }
     // Sort families
-    families.sort((a, b) => {
-        if (a.parents > b.parents) {
-            return 1;
-        }
-        if (a.parents < b.parents) {
-            return -1;
-        }
-        return 0;
-    });
+    families.sort((a, b) =>
+        cleanName(a.parents).localeCompare(cleanName(b.parents), undefined, { sensitivity: "base" })
+    );
     // Sort children
     for (const family of families) {
         // Sort by fname
