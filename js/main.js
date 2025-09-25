@@ -97,6 +97,7 @@ function allFilesRead() {
 
 /**
  * Formats the given phone number
+ * @param {string} phoneNumberString
  */
 function formatPhoneNumber(phoneNumberString) {
     var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
@@ -122,8 +123,8 @@ function cleanName(name) {
 
 /**
  * Builds an array of family objects based on the data read from the uploaded CSV file
- * @param {*} roster_parse_obj 
- * @param {*} church_parse_obj 
+ * @param {object} roster_parse_obj 
+ * @param {object} church_parse_obj 
  */
 function buildFamilies(roster_parse_obj, church_parse_obj) {
     // Build roster (array of student objects)
@@ -135,11 +136,14 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
         if (roster[i].length > 1) {
             // add student to roster only if has parents (if parents is blank, it is most likely a test or church account)
             if (roster[i][col_headers.indexOf('parents')]) {
-                let student_obj = {};
-                for (let j = 0; j < col_headers.length; j++) {
-                    student_obj[col_headers[j]] = roster[i][col_headers.indexOf(col_headers[j])];
+                // ignore if has (Billing Acct) in first name
+                if (!roster[i][col_headers.indexOf('fname')].includes('(Billing Acct)')) {
+                    let student_obj = {};
+                    for (let j = 0; j < col_headers.length; j++) {
+                        student_obj[col_headers[j]] = roster[i][col_headers.indexOf(col_headers[j])];
+                    }
+                    obj_roster.push(student_obj);
                 }
-                obj_roster.push(student_obj);
             }
         }
     }
@@ -315,21 +319,28 @@ function buildFamilies(roster_parse_obj, church_parse_obj) {
             throw Error('Student object does not contain "gradelevel" or "gradelevx" property');
         }
         for (const child of family.children) {
-            child['gradelevel'] = child[gl_key_name];
+            child.gradelevel = child[gl_key_name];
+            // Swap PK to Y5, PS to PK
+            if (child.gradelevel === 'PK') {
+                child.gradelevel = 'Y5';
+            } else if (child.gradelevel === 'PS') {
+                child.gradelevel = 'PK';
+            }
+        }
+        const grade_level_nums = {
+            'K': 0.5,
+            'Y5': 0.25,
+            'PK': 0.1
         }
         family.children.sort((a, b) => {
             let a_grade, b_grade;
-            if (a.gradelevel == 'K') {
-                a_grade = 0.5;
-            } else if (a.gradelevel == 'PK') {
-                a_grade = 0.25;
+            if (a.gradelevel in grade_level_nums) {
+                a_grade = grade_level_nums[a.gradelevel];
             } else {
                 a_grade = parseFloat(a.gradelevel);
             }
-            if (b.gradelevel == 'K') {
-                b_grade = 0.5;
-            } else if (b.gradelevel == 'PK') {
-                b_grade = 0.25;
+            if (b.gradelevel in grade_level_nums) {
+                b_grade = grade_level_nums[b.gradelevel];
             } else {
                 b_grade = parseFloat(b.gradelevel);
             }

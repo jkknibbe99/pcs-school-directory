@@ -15,7 +15,7 @@
 
         <!-- Version files refresh script -->
         <script>
-            const version = '1.2.6';  // the current version
+            const version = '1.2.7';  // the current version
 
             // Add version to main.css
             document.head.insertAdjacentHTML('beforeend', `
@@ -81,10 +81,23 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="versionHistoryModalLabel">Version History</h5>
+                        <h4 class="modal-title" id="versionHistoryModalLabel">Version History</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Formatting updates</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.2.7</h6>
+                                <p class="card-text">
+                                    <ul>
+                                        <li>Ignore student first names containing (Billing Acct)</li>
+                                        <li>Replace gradelevels PK -> Y5, PS -> PK</li>
+                                        <li>Update/fix/simplify grade level sorting</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
                         <div class="card mb-2">
                             <div class="card-body">
                                 <h5 class="card-title">Version History added</h5>
