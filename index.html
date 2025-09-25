@@ -15,7 +15,7 @@
 
         <!-- Version files refresh script -->
         <script>
-            const version = '1.2.5';  // the current version
+            const version = '1.2.6';  // the current version
 
             // Add version to main.css
             document.head.insertAdjacentHTML('beforeend', `
@@ -41,7 +41,7 @@
         <div id="file-input-container">
             <div style="width: fit-content; margin: auto;">
                 <h1 style="display: inline-block; width: fit-content;" class="mt-5 mb-0">PCS Directory Maker</h1>
-                <p id="version" style="display: inline-block; width: fit-content" class="mb-3"></p>
+                <a id="version" style="display: inline-block; width: fit-content" class="mb-3" data-bs-toggle="modal" data-bs-target="#versionHistoryModal"></a>
             </div>
             <div style="width: fit-content; margin: auto;">
                 <label for="roster-file-input">Please upload roster CSV</label>
@@ -71,6 +71,154 @@
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="buildFamilies(parse_objs['roster'])">Continue</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Version history Modal -->
+        <div class="modal fade" id="versionHistoryModal" tabindex="-1" aria-labelledby="versionHistoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="versionHistoryModalLabel">Version History</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Version History added</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.2.6</h6>
+                                <p class="card-text">
+                                    Added a version history modal. Accessible by clicking the current version number on the main/home page.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Font options show actual font</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.2.5</h6>
+                                <p class="card-text">
+                                    When selecting font for the directory, the font dropdown options show the actual font.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Bug fixes</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.2.4</h6>
+                                <p class="card-text">
+                                    <ul>
+                                        <li>Fixed student last name displaying when it shouldn't. Fixed by ignoring capitalization, spaces, punctuation, etc.</li>
+                                        <li>Fixed family sorting by ignoring capitalizatoin, spaces, punctuation, etc.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Bug fixes</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.2.3</h6>
+                                <p class="card-text">
+                                    <ul>
+                                        <li>Handle parents missing last name.</li>
+                                        <li>Format name for parents2.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Bug fixes</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.2.2</h6>
+                                <p class="card-text">
+                                    <ul>
+                                        <li>Handle separated parents scenarios.</li>
+                                        <li>Handle multiple email addresses.</li>
+                                        <li>Misc directory formatting updates.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Font style options, etc.</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.2.1</h6>
+                                <p class="card-text">
+                                    <ul>
+                                        <li>Added a font style dropdown on directory title page to allow user to select directory font.</li>
+                                        <li>Updated default styling options (font-size, spacing)</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Font-size and spacing options, bug fixes</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.2.0</h6>
+                                <p class="card-text">
+                                    <ul>
+                                        <li>Added options to change spacing and font-size.</li>
+                                        <li>Column/page organizer functino reworked.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Styling updates</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.1.4</h6>
+                                <p class="card-text">
+                                    <ul>
+                                        <li>Removed card borders</li>
+                                        <li>Spacing increase</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Formatting, versioning</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.1.3</h6>
+                                <p class="card-text">
+                                    <ul>
+                                        <li>Parent name labels added for phone numbers.</li>
+                                        <li>Misc styling updates.</li>
+                                        <li>Added version file refresh script.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Last name diff</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.1.2</h6>
+                                <p class="card-text">
+                                    Displays students last name if different from parents.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">FamilyID error message</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.1.1</h6>
+                                <p class="card-text">
+                                    Added error message if FamilyID column is missing from the roster CSV.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Static site created</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">1.1.0</h6>
+                                <p class="card-text">
+                                    Created static site directory maker with roster CSV parsing and directory creation.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>

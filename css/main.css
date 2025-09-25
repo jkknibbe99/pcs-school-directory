@@ -9,6 +9,11 @@ html, body {
     background-color: lightgray;
 }
 
+#version {
+    cursor: pointer;
+    text-decoration: none;
+}
+
 .full-page {
     position: relative;
     height: 1056px;
