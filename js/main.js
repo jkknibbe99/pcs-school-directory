@@ -517,5 +517,10 @@ window.onafterprint = function(){
 
 // window onload function
 window.onload = function () {
+    // Set full page font
     $('.full-page').css('font-family', $('#font-style').val());
+    // Set font options font
+    $('#font-style option').each(function() {
+        $(this).css('font-family', $(this).text());
+    });
 }
